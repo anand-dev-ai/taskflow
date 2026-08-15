@@ -1163,3 +1163,7 @@ then paste the complete README above.
 3. Press:
 
 Ctrl + S
+
+## Git Workflow
+
+TaskFlow was developed using a feature branch workflow. Changes were developed on a feature branch and merged back into the main branch.
