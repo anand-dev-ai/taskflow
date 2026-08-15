@@ -1167,3 +1167,10 @@ Ctrl + S
 ## Git Workflow
 
 TaskFlow was developed using a feature branch workflow. Changes were developed on a feature branch and merged back into the main branch.
+
+## Algorithm Checks
+
+Run the automated algorithm checks with:
+
+```bash
+python check_algorithms.py
