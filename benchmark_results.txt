@@ -1,0 +1,17 @@
+TaskFlow Algorithm Benchmark
+============================
+
+Data size: 10
+Insertion sort comparisons: 45
+Binary search: index=0, comparisons=5
+Linear search: index=9, comparisons=10
+
+Data size: 500
+Insertion sort comparisons: 94034
+Binary search: index=0, comparisons=15
+Linear search: index=499, comparisons=500
+
+Data size: 3000
+Insertion sort comparisons: 2681712
+Binary search: index=0, comparisons=21
+Linear search: index=2999, comparisons=3000
