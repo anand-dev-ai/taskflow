@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div>
+            <h1>TaskFlow</h1>
+            <p>Dark-store engineering task management</p>
+        </div>
+    </header>
+
+    <main class="page-container">
+
+        <section class="task-form-section">
+            <h2>Add a Task</h2>
+
+            <form id="task-form">
+
+                <div class="form-group">
+                    <label for="title">Task title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="Enter task title"
+                    >
+                    <span
+                        id="title-error"
+                        class="error-message"
+                        aria-live="polite"
+                    ></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority" name="priority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="due-date">Due date</label>
+                    <input
+                        type="text"
+                        id="due-date"
+                        name="due-date"
+                        placeholder="e.g. next friday"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="project-id">Project ID</label>
+                    <input
+                        type="number"
+                        id="project-id"
+                        name="project-id"
+                        min="1"
+                        value="1"
+                    >
+                </div>
+
+                <button type="submit" id="submit-button">
+                    Add Task
+                </button>
+
+            </form>
+        </section>
+
+        <section class="task-list-section">
+            <div class="task-list-header">
+                <h2>Tasks</h2>
+                <span id="task-count">0 tasks</span>
+            </div>
+
+            <p id="loading-message" class="loading-message">
+                Loading tasks...
+            </p>
+
+            <div id="task-list" class="task-list"></div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
