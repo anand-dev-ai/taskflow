@@ -1,94 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TaskFlow V2</title><link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <header class="site-header">
-        <div>
-            <h1>TaskFlow</h1>
-            <p>Dark-store engineering task management</p>
-        </div>
-    </header>
-
-    <main class="page-container">
-
-        <section class="task-form-section">
-            <h2>Add a Task</h2>
-
-            <form id="task-form">
-
-                <div class="form-group">
-                    <label for="title">Task title</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        placeholder="Enter task title"
-                    >
-                    <span
-                        id="title-error"
-                        class="error-message"
-                        aria-live="polite"
-                    ></span>
-                </div>
-
-                <div class="form-group">
-                    <label for="priority">Priority</label>
-                    <select id="priority" name="priority">
-                        <option value="low">Low</option>
-                        <option value="medium" selected>Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="due-date">Due date</label>
-                    <input
-                        type="text"
-                        id="due-date"
-                        name="due-date"
-                        placeholder="e.g. next friday"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="project-id">Project ID</label>
-                    <input
-                        type="number"
-                        id="project-id"
-                        name="project-id"
-                        min="1"
-                        value="1"
-                    >
-                </div>
-
-                <button type="submit" id="submit-button">
-                    Add Task
-                </button>
-
-            </form>
-        </section>
-
-        <section class="task-list-section">
-            <div class="task-list-header">
-                <h2>Tasks</h2>
-                <span id="task-count">0 tasks</span>
-            </div>
-
-            <p id="loading-message" class="loading-message">
-                Loading tasks...
-            </p>
-
-            <div id="task-list" class="task-list"></div>
-        </section>
-
-    </main>
-
-    <script src="script.js"></script>
-</body>
-</html>
+<header class="site-header"><div><h1>TaskFlow <span>V2</span></h1><p>Secure, smart task management</p></div><button id="logout" class="secondary hidden">Logout</button></header>
+<main class="page-container">
+<section id="auth-section" class="card auth-grid">
+<div><h2>Welcome back</h2><p>Login or create an account to manage your tasks.</p></div>
+<div><div class="tabs"><button id="login-tab" class="active">Login</button><button id="register-tab">Register</button></div>
+<form id="auth-form"><input id="auth-name" class="hidden" placeholder="Name"><input id="auth-email" type="email" placeholder="Email" required><input id="auth-password" type="password" placeholder="Password (8+ characters)" required minlength="8"><button id="auth-submit">Login</button></form><p id="auth-error" class="error-message"></p></div>
+</section>
+<section id="app-section" class="hidden">
+<div class="dashboard-grid"><div class="stat card"><b id="total-count">0</b><span>Total</span></div><div class="stat card"><b id="pending-count">0</b><span>Pending</span></div><div class="stat card"><b id="progress-count">0</b><span>In progress</span></div><div class="stat card"><b id="done-count">0</b><span>Completed</span></div></div>
+<section class="card"><div class="section-head"><div><h2>Add task</h2><p>Use normal task input or Quick Add.</p></div><select id="project-select"></select></div>
+<div class="quick-row"><input id="quick-input" placeholder="e.g. Finish report urgently tomorrow"><button id="quick-add">Quick Add</button></div>
+<hr>
+<form id="task-form" class="task-form"><input id="title" placeholder="Task title" required><input id="description" placeholder="Description"><select id="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select><select id="status"><option value="pending">Pending</option><option value="in_progress">In progress</option><option value="completed">Completed</option></select><input id="due-date" type="date"><button>Add Task</button></form><p id="form-message"></p></section>
+<section class="card"><div class="section-head"><h2>Projects</h2><button id="new-project" class="secondary">+ Project</button></div><div id="project-list"></div></section>
+<section class="card"><div class="section-head"><h2>Tasks</h2><div class="filters"><input id="search" placeholder="Search title"><select id="filter-status"><option value="">All status</option><option value="pending">Pending</option><option value="in_progress">In progress</option><option value="completed">Completed</option></select><select id="sort"><option value="created">Newest</option><option value="priority">Priority</option><option value="due_date">Due date</option></select></div></div><div id="task-list"></div></section>
+</section></main><script src="script.js"></script></body></html>
