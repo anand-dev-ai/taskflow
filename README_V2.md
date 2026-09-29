@@ -1,26 +1,43 @@
 # TaskFlow V2
 
-TaskFlow V2 evolves the original capstone into an authenticated task-management application while preserving the original CRUD, DSA, Quick Add, and statistics ideas.
+TaskFlow V2 evolves my original capstone project into a deployed, authenticated task-management application while preserving and improving the original CRUD, DSA, Quick Add, and statistics features.
 
-## Highlights
-- JWT authentication and password hashing
-- User-scoped projects and tasks
-- Task status, priority, description, due dates, timestamps
-- Search, filtering and sorting
-- Quick Add natural-language parser with date normalization
-- Project statistics
-- Algorithm implementations and benchmarking
-- FastAPI + SQLAlchemy + SQLite
+## 🚀 Live Demo
 
-## Run
-1. Create/activate `.venv`
-2. `pip install -r requirements.txt`
-3. Copy `.env.example` to `.env` and set `SECRET_KEY`
-4. `uvicorn backend.main:app --reload`
-5. Serve `frontend/` on port 5500, for example with VS Code Live Server.
-6. Open `http://127.0.0.1:5500`
+🌐 **TaskFlow V2:** https://taskflow-6rmp.onrender.com
 
-API docs: `http://127.0.0.1:8000/docs`
+📚 **API Documentation:** https://taskflow-6rmp.onrender.com/docs
 
-## Interview summary
-V2 demonstrates REST API design, ORM relationships, authentication, authorization, validation, database constraints, DSA, natural-language parsing, analytics, and frontend-backend integration.
+## ✨ Highlights
+
+- 🔐 JWT-based authentication
+- 🔑 Password hashing and secure login
+- 👤 User-scoped projects and tasks
+- 📁 Project management
+- ✅ Task CRUD operations
+- 🎯 Task status and priority management
+- 📝 Task descriptions
+- 📅 Due dates and timestamps
+- 🔎 Search, filtering, and sorting
+- ⚡ Quick Add natural-language task parser
+- 📊 Project and task statistics
+- 🧠 DSA implementations and benchmarking
+- 🌐 Frontend served directly through FastAPI
+- 🚀 Live deployment on Render
+
+## 🛠️ Tech Stack
+
+- **Backend:** Python, FastAPI
+- **Database:** SQLite, SQLAlchemy
+- **Authentication:** JWT
+- **Frontend:** HTML, CSS, JavaScript
+- **Testing:** Pytest
+- **Deployment:** Render
+- **Version Control:** Git & GitHub
+
+## 🏃 Run Locally
+
+### 1. Create and activate virtual environment
+
+```bash
+python -m venv .venv
