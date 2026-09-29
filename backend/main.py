@@ -14,9 +14,7 @@ Base.metadata.create_all(bind=engine)
 app=FastAPI(title="TaskFlow V2", version="2.0.0", description="Authenticated task and project management API")
 app.add_middleware(CORSMiddleware, allow_origins=[
     "http://localhost:5500",
-    "http://127.0.0.1:5500",
-    "https://taskflow-18gt.onrender.com"
-], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+    "http://127.0.0.1:5500",], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 @app.middleware("http")
 async def log_requests(request, call_next):
