@@ -1,6 +1,9 @@
 import time
 from datetime import date
+from pathlib import Path
 from fastapi import Depends, FastAPI, HTTPException, Query, status
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func, case
 from sqlalchemy.orm import Session
@@ -12,9 +15,11 @@ from .auth import create_access_token, get_current_user, hash_password, verify_p
 
 Base.metadata.create_all(bind=engine)
 app=FastAPI(title="TaskFlow V2", version="2.0.0", description="Authenticated task and project management API")
-app.add_middleware(CORSMiddleware, allow_origins=[
-    "http://localhost:5500",
-    "http://127.0.0.1:5500",], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+BASE_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIR = BASE_DIR / "frontend"
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5500","http://127.0.0.1:5500"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 @app.middleware("http")
 async def log_requests(request, call_next):
@@ -23,7 +28,8 @@ async def log_requests(request, call_next):
     return response
 
 @app.get("/")
-def root(): return {"message":"TaskFlow API is running","version":"2.0.0"}
+def root():
+    return FileResponse(FRONTEND_DIR / "index.html")
 
 @app.get("/health")
 def health(db: Session=Depends(get_db)):

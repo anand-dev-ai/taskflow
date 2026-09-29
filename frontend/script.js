@@ -1,4 +1,4 @@
-const API='http://127.0.0.1:8000';let token=localStorage.getItem('taskflow_token');let projects=[];let loginMode=true;
+const API=window.location.origin;let token=localStorage.getItem('taskflow_token');let projects=[];let loginMode=true;
 const $=id=>document.getElementById(id);const authSection=$('auth-section'),appSection=$('app-section');
 function headers(){return {'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})}}
 async function api(path,opts={}){const r=await fetch(API+path,{...opts,headers:{...headers(),...(opts.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok){if(r.status===401){logout();}throw Error(d.detail||`Request failed (${r.status})`)}return d}

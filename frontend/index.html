@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>TaskFlow V2</title><link rel="stylesheet" href="styles.css">
+<title>TaskFlow V2</title><link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
 <header class="site-header"><div><h1>TaskFlow <span>V2</span></h1><p>Secure, smart task management</p></div><button id="logout" class="secondary hidden">Logout</button></header>
@@ -20,4 +20,4 @@
 <form id="task-form" class="task-form"><input id="title" placeholder="Task title" required><input id="description" placeholder="Description"><select id="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select><select id="status"><option value="pending">Pending</option><option value="in_progress">In progress</option><option value="completed">Completed</option></select><input id="due-date" type="date"><button>Add Task</button></form><p id="form-message"></p></section>
 <section class="card"><div class="section-head"><h2>Projects</h2><button id="new-project" class="secondary">+ Project</button></div><div id="project-list"></div></section>
 <section class="card"><div class="section-head"><h2>Tasks</h2><div class="filters"><input id="search" placeholder="Search title"><select id="filter-status"><option value="">All status</option><option value="pending">Pending</option><option value="in_progress">In progress</option><option value="completed">Completed</option></select><select id="sort"><option value="created">Newest</option><option value="priority">Priority</option><option value="due_date">Due date</option></select></div></div><div id="task-list"></div></section>
-</section></main><script src="script.js"></script></body></html>
+</section></main><script src="/static/script.js"></script></body></html>
