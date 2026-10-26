@@ -1,45 +1,57 @@
-# TaskFlow — Full-Stack AI-Assisted Task Management Platform
+# TaskFlow V2 — Full-Stack Task Management Platform
 
-TaskFlow is a full-stack task and project management platform built with FastAPI, SQLAlchemy, SQLite, HTML, CSS, and JavaScript.
+TaskFlow V2 is an upgraded version of my original capstone project, developed to demonstrate backend engineering, relational database design, authentication, algorithm implementation, automated testing, and deployment.
 
-It provides:
+Built with Python, FastAPI, SQLAlchemy, SQLite, HTML, CSS, and JavaScript, the application provides authenticated task and project management through a web dashboard and REST API.
 
-- User and project management
-- Full task CRUD
-- Project task statistics
-- Insertion-sort based task sorting
-- Binary and linear task search
-- Algorithm comparison benchmarks
-- AI-assisted natural-language Quick-Add
-- Browser localStorage caching
-- Responsive frontend dashboard
-- Request logging middleware
-- CORS configuration
+The project extends the original CRUD, data structures and algorithms (DSA), Quick Add, and statistics features with JWT-based authentication, user-scoped resources, automated tests, and deployment.
 
----
+## Live Application
 
-## 1. Technology Stack
+- **Live Demo:** https://taskflow-6rmp.onrender.com
+- **API Documentation (Swagger UI):** https://taskflow-6rmp.onrender.com/docs
 
-### Backend
+## Key Features
 
-- Python
-- FastAPI
-- SQLAlchemy
-- Pydantic
-- SQLite
-- Uvicorn
+- **Authentication:** JWT-based authentication, password hashing, and authenticated API access.
+- **User-specific resources:** Access controls for users' own projects and tasks.
+- **Task management:** Create, retrieve, update, and delete tasks.
+- **Project management:** Organize tasks into projects.
+- **Task organization:** Manage priorities, statuses, descriptions, and due dates.
+- **Search and filtering:** Find and organize tasks using supported search, filtering, and sorting operations.
+- **Project statistics:** Retrieve task counts and project-level statistics.
+- **Quick Add:** Parse natural-language task descriptions into structured task data using a deterministic parser.
+- **Custom algorithms:** Implement insertion sort, binary search, and linear search.
+- **Algorithm benchmarking:** Compare algorithm comparison counts across different dataset sizes.
+- **Input validation:** Validate request data using Pydantic models.
+- **Automated testing:** Test application workflows using pytest.
+- **Continuous integration:** Run automated tests through GitHub Actions.
+- **Web interface:** Responsive HTML, CSS, and JavaScript frontend.
+- **Deployment:** Serve the frontend and backend through FastAPI in the deployed application.
 
-### Frontend
+## Technology Stack
 
-- HTML5
-- CSS3
-- JavaScript
-- Fetch API
-- localStorage
+| Area | Technologies |
+|---|---|
+| Programming language | Python |
+| Backend framework | FastAPI |
+| API documentation | OpenAPI, Swagger UI |
+| Database | SQLite |
+| ORM | SQLAlchemy |
+| Data validation | Pydantic |
+| Authentication | JWT, password hashing |
+| Frontend | HTML5, CSS3, JavaScript |
+| HTTP communication | Fetch API |
+| Testing | pytest |
+| CI | GitHub Actions |
+| Version control | Git, GitHub |
+| Hosting | Render |
 
----
+## Project Architecture
 
-## 2. Project Structure
+The application separates its backend responsibilities into modules for application routes and logic, database configuration, ORM models, request and response schemas, algorithm implementations, and Quick Add parsing.
+
+The frontend contains the HTML page, CSS styles, and JavaScript used to communicate with the backend.
 
 ```text
 taskflow/
@@ -55,1122 +67,381 @@ taskflow/
 │   ├── index.html
 │   ├── styles.css
 │   └── script.js
+├── tests/
+│   └── test_v2.py
 ├── check_algorithms.py
 ├── benchmark.py
 ├── requirements.txt
 └── README.md
+```
 
-3. Environment Setup
-Create a Python virtual environment.
-
-Windows PowerShell
-python -m venv .venv
-Activate it:
-
-.venv\Scripts\Activate.ps1
-Install the required packages:
-
-pip install -r requirements.txt
-4. Running the Application
-TaskFlow uses a two-process setup.
-
-Terminal 1 — Backend
-From the project root:
-
-uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
-The backend runs at:
-
-http://127.0.0.1:8000
-Swagger API documentation is available at:
-
-http://127.0.0.1:8000/docs
-Terminal 2 — Frontend
-From the project root:
-
-cd frontend
-python -m http.server 5500
-Open the dashboard in the browser:
-
-http://127.0.0.1:5500
-The frontend communicates with:
-
-http://127.0.0.1:8000
-The backend CORS configuration explicitly allows:
-
-http://localhost:5500
-http://127.0.0.1:5500
-5. Database Schema
-TaskFlow uses three related SQLAlchemy tables:
-
-users
-
-projects
-
-tasks
-
-Users
-Column	Type	Constraint
-id	Integer	Primary key
-name	String	NOT NULL
-email	String	NOT NULL, UNIQUE
-Projects
-Column	Type	Constraint
-id	Integer	Primary key
-name	String	NOT NULL
-owner_id	Integer	Foreign key → users.id
-Tasks
-Column	Type	Constraint
-id	Integer	Primary key
-title	String	NOT NULL
-priority	String	low / medium / high
-due_date	String	Nullable
-project_id	Integer	Foreign key → projects.id
-The SQLAlchemy models use relationship() and back_populates() for:
-
-User ↔ Project
-Project ↔ Task
-Therefore:
-
-user.projects
-project.owner
-project.tasks
-task.project
-resolve through SQLAlchemy relationships.
-
-6. API Endpoints
-Users
-POST /users
-Creates a user.
-
-Example request:
-
-{
-  "name": "Rahul",
-  "email": "rahul@example.com"
-}
-Example response:
-
-{
-  "id": 1,
-  "name": "Rahul",
-  "email": "rahul@example.com"
-}
-Successful creation returns:
-
-201 Created
-GET /users
-Lists all users.
-
-Example response:
-
-[
-  {
-    "id": 1,
-    "name": "Rahul",
-    "email": "rahul@example.com"
-  }
-]
-Successful response:
-
-200 OK
-7. Project Endpoints
-POST /projects
-Creates a project.
-
-Example request:
-
-{
-  "name": "Scanner Maintenance",
-  "owner_id": 1
-}
-Example response:
-
-{
-  "id": 1,
-  "name": "Scanner Maintenance",
-  "owner_id": 1
-}
-Successful creation returns:
-
-201 Created
-If the owner does not exist:
-
-404 Not Found
-GET /projects
-Lists all projects.
-
-Example response:
-
-[
-  {
-    "id": 1,
-    "name": "Scanner Maintenance",
-    "owner_id": 1
-  }
-]
-8. Task CRUD Endpoints
-POST /tasks
-Creates a task.
-
-Example request:
-
-{
-  "title": "Repair scanner",
-  "priority": "high",
-  "due_date": "tomorrow",
-  "project_id": 1
-}
-Example response:
-
-{
-  "id": 1,
-  "title": "Repair scanner",
-  "priority": "high",
-  "due_date": "tomorrow",
-  "project_id": 1
-}
-Successful creation:
-
-201 Created
-If the project does not exist:
-
-404 Not Found
-GET /tasks
-Lists all tasks.
-
-Example response:
-
-[
-  {
-    "id": 1,
-    "title": "Repair scanner",
-    "priority": "high",
-    "due_date": "tomorrow",
-    "project_id": 1
-  }
-]
-GET /tasks/{task_id}
-Gets one task by ID.
-
-Example:
-
-GET /tasks/1
-Example response:
-
-{
-  "id": 1,
-  "title": "Repair scanner",
-  "priority": "high",
-  "due_date": "tomorrow",
-  "project_id": 1
-}
-If the task does not exist:
-
-404 Not Found
-PUT /tasks/{task_id}
-Updates a task.
-
-Example request:
-
-{
-  "title": "Repair scanner urgently",
-  "priority": "high",
-  "due_date": "today",
-  "project_id": 1
-}
-Example response:
-
-{
-  "id": 1,
-  "title": "Repair scanner urgently",
-  "priority": "high",
-  "due_date": "today",
-  "project_id": 1
-}
-If the task does not exist:
-
-404 Not Found
-DELETE /tasks/{task_id}
-Deletes a task.
-
-Example:
-
-DELETE /tasks/1
-Example response:
-
-{
-  "message": "Task deleted successfully"
-}
-If the task does not exist:
-
-404 Not Found
-9. Validation
-Task requests use Pydantic models.
-
-The task priority must be one of:
-
-low
-medium
-high
-For example:
-
-{
-  "title": "Test task",
-  "priority": "urgent",
-  "project_id": 1
-}
-is rejected because urgent is not a valid priority.
-
-The title also has a custom validator.
-
-Whitespace-only titles are rejected.
-
-Example:
-
-"     "
-produces HTTP:
-
-422 Unprocessable Entity
-10. Project Statistics
-GET /projects/statistics
-Returns task statistics for every project.
-
-The aggregation is performed by SQLAlchemy using SQL COUNT and GROUP BY.
-
-Example response:
-
-[
-  {
-    "project_id": 1,
-    "project_name": "Scanner Maintenance",
-    "task_count": 3
-  },
-  {
-    "project_id": 2,
-    "project_name": "Network",
-    "task_count": 5
-  }
-]
-The task counts are calculated by the database rather than fetching every task and counting them in Python.
-
-11. Sorting Endpoint
-GET /tasks?sort=priority
-Returns tasks sorted by priority.
-
-Priority ranking:
-
-low = 1
-medium = 2
-high = 3
-Example:
-
-GET /tasks?sort=priority
-Example response:
-
-[
-  {
-    "id": 2,
-    "title": "Clean scanner",
-    "priority": "low",
-    "due_date": "Friday",
-    "project_id": 1
-  },
-  {
-    "id": 1,
-    "title": "Repair scanner",
-    "priority": "high",
-    "due_date": "today",
-    "project_id": 1
-  }
-]
-The endpoint fetches real tasks from the database and calls the custom:
-
-insertion_sort(records, "priority_rank")
-It does not use Python's:
-
-sorted()
-or:
-
-list.sort()
-12. Search Endpoints
-GET /tasks/search?title={title}&algo=binary
-Searches for an exact task title using binary search.
-
-Example:
-
-GET /tasks/search?title=Repair%20scanner&algo=binary
-Example response:
-
-{
-  "id": 1,
-  "title": "Repair scanner",
-  "priority": "high",
-  "due_date": "today",
-  "project_id": 1
-}
-The search index is sorted using the custom insertion sort before binary search.
-
-If the task does not exist:
-
-404 Not Found
-GET /tasks/search?title={title}&algo=linear
-Searches for an exact task title using linear search.
-
-Example:
-
-GET /tasks/search?title=Repair%20scanner&algo=linear
-Example response:
-
-{
-  "id": 1,
-  "title": "Repair scanner",
-  "priority": "high",
-  "due_date": "today",
-  "project_id": 1
-}
-If the task does not exist:
-
-404 Not Found
-An unsupported algorithm value returns:
-
-422 Unprocessable Entity
-13. AI Quick-Add
-POST /tasks/quick-add
-Quick-Add accepts a natural-language description and creates a real task in the same database.
-
-Example request:
+The exact files and test paths should match the current repository.
 
-{
-  "description": "Fix the scanner ASAP next Monday",
-  "project_id": 1
-}
-Example response:
+### Architecture responsibilities
 
-{
-  "id": 5,
-  "title": "Fix the scanner",
-  "priority": "high",
-  "due_date": "next monday",
-  "project_id": 1
-}
-Successful creation:
+- **`main.py`:** FastAPI application, routes, middleware, and application integration.
+- **`database.py`:** Database configuration, SQLAlchemy setup, and database-session dependency.
+- **`models.py`:** Relational database models and relationships.
+- **`schemas.py`:** Pydantic schemas and request validation.
+- **`algorithms.py`:** Custom sorting and searching implementations.
+- **`ai_parser.py`:** Deterministic natural-language task parsing.
+- **`frontend/`:** Browser interface and API communication.
+- **`tests/`:** Automated tests for application behavior.
 
-201 Created
-The implementation:
+## Database Design
 
-Validates the request.
+TaskFlow V2 uses SQLAlchemy with SQLite to persist application data.
 
-Checks that the project exists.
+The primary entities are:
 
-Builds a role-based prompt.
+### User
 
-Runs the deterministic mock parser.
+Represents an application user and stores account information. Authentication-related fields support secure login.
 
-Validates the parsed task with the Pydantic Task model.
+### Project
 
-Creates the real database row.
+Represents a project owned by a user. The owner relationship connects projects to their users.
 
-Returns the created task.
+### Task
 
-The required mock parser uses:
+Represents a task associated with a project. Task fields support titles, descriptions, priorities, status, and due dates.
 
-zero API keys
-zero network calls
-zero paid services
-14. AI Parser Rules
-The parser first creates a lower-case copy of the description for keyword matching.
+### Relationships
 
-The original description casing is preserved for the title.
+The relational model connects users, projects, and tasks through foreign keys and SQLAlchemy relationships.
 
-Priority
-Priority is determined in this order:
+These relationships support structured queries and help maintain consistency between related records.
 
-High
-If the description contains:
+TaskFlow V2 also uses user-scoped queries and ownership checks to ensure that authenticated users can access only resources they are authorized to manage.
 
-urgent
-or:
+## Authentication and Authorization
 
-asap
-priority becomes:
+TaskFlow V2 uses JWT-based authentication and password hashing.
 
-high
-Low
-If high priority keywords are absent and the description contains:
+The authentication workflow includes:
 
-whenever
-or:
+1. Registering a user.
+2. Storing a password hash rather than a plaintext password.
+3. Authenticating login credentials.
+4. Issuing a JWT after successful authentication.
+5. Sending the token with protected API requests.
+6. Verifying the authenticated user's identity and resource ownership.
 
-low priority
-priority becomes:
+User-scoped access controls are an important part of the application because authentication alone does not establish permission to access every resource.
 
-low
-Medium
-If neither group matches:
+## REST API Development
 
-medium
-If both high and low keywords are present, high wins.
+FastAPI provides the application's REST API and generates OpenAPI documentation for supported endpoints.
 
-All occurrences of all priority keywords are removed from the title.
+The API supports task and project management, authentication, and other features implemented in the application.
 
-15. AI Due-Date Rules
-Due-date phrases are checked in this order:
+### API documentation
 
-today
+Open the deployed Swagger UI:
 
-tomorrow
+https://taskflow-6rmp.onrender.com/docs
 
-next week
+Swagger UI allows developers to inspect available endpoints, examine request and response schemas, and try supported API operations.
 
-next monday
+### Request validation
 
-next tuesday
+Pydantic schemas validate incoming request data. Depending on the endpoint, validation can enforce required fields, permitted priority values, and non-empty task titles.
 
-next wednesday
+Invalid request data should produce appropriate HTTP error responses rather than creating invalid records.
 
-next thursday
+### Error handling
 
-next friday
+The application uses HTTP status codes to communicate request outcomes. Examples include:
 
-next saturday
+- `200 OK` for successful retrieval or updates where configured.
+- `201 Created` for successful resource creation where configured.
+- `401 Unauthorized` for missing or invalid authentication where applicable.
+- `403 Forbidden` when a request is authenticated but not permitted, where implemented.
+- `404 Not Found` when a requested resource does not exist or is intentionally treated as unavailable.
+- `422 Unprocessable Entity` for request validation failures.
 
-next sunday
+Actual status codes depend on the endpoint implementation and should be verified against the running API.
 
-monday
+## Task Management
 
-tuesday
+TaskFlow V2 supports task creation, retrieval, updates, and deletion.
 
-wednesday
+Tasks can include fields such as:
 
-thursday
+- Title
+- Description
+- Priority
+- Status
+- Due date
+- Project association
+- Timestamps, where implemented
 
-friday
+The application also provides supported filtering, sorting, search, and statistics operations.
 
-saturday
+## Project Statistics
 
-sunday
+TaskFlow provides project-level task statistics through its API.
 
-The first matching phrase is used.
+Where implemented, SQLAlchemy queries use database aggregation, such as `COUNT` and `GROUP BY`, to calculate task counts.
 
-The returned phrase is lowercase.
+Database-side aggregation can avoid retrieving every task into Python solely to calculate totals.
 
-For example:
+## Custom Data Structures and Algorithms
 
-Finish the report next Friday
-produces:
+TaskFlow includes hand-written implementations of three algorithms.
 
-{
-  "due_date_hint": "next friday"
-}
-The due-date value is stored as raw text in the database.
+### Insertion Sort
 
-16. AI Title Rules
-The parser removes every matching priority keyword from the original description.
+Insertion sort orders records according to a specified key by shifting larger elements and inserting each item into its appropriate position.
 
-It also removes the matched due-date phrase.
+- Best-case time complexity: `O(n)` for already sorted input.
+- Average-case time complexity: `O(n²)`.
+- Worst-case time complexity: `O(n²)`.
+- Auxiliary space complexity: `O(1)` for an in-place implementation.
 
-The remaining text is trimmed using .strip().
+### Binary Search
 
-If nothing remains, the title becomes:
+Binary search repeatedly halves a sorted search space to locate a target.
 
-Untitled task
-The title can never be empty.
+- Best-case time complexity: `O(1)`.
+- Average-case time complexity: `O(log n)`.
+- Worst-case time complexity: `O(log n)`.
+- Auxiliary space complexity: `O(1)` for an iterative implementation.
 
-17. Prompt Structure
-The Quick-Add feature constructs a role-based prompt with:
+**Requirement:** Binary search operates on data sorted according to the same key used for searching.
 
-system → parsing instructions
-user → free-text task description
-This structure allows the same interface to be used later with a real LLM while the required implementation remains a deterministic mock.
+### Linear Search
 
-18. Prompting Technique
-The implementation is modeled primarily on zero-shot prompting.
+Linear search examines records sequentially until it finds a target or reaches the end.
 
-The system message directly describes the expected parsing behavior instead of requiring many example conversations.
+- Best-case time complexity: `O(1)`.
+- Average-case time complexity: `O(n)`.
+- Worst-case time complexity: `O(n)`.
+- Auxiliary space complexity: `O(1)` for a simple iterative implementation.
 
-This reduces token usage compared with few-shot prompting because multiple examples do not have to be included in every request.
+### Algorithm Comparison
 
-The explicit instructions also improve response reliability because the parser behavior is clearly defined.
+The project includes a benchmark script that records comparison counts for different input sizes.
 
-Chain-of-thought prompting is unnecessary because the required output is a structured task record rather than an explanation of reasoning.
+Previously recorded results include:
 
-The current implementation is deterministic and therefore does not depend on probabilistic LLM behavior.
+| Dataset size | Insertion sort comparisons | Binary search comparisons | Linear search comparisons |
+|---:|---:|---:|---:|
+| 10 | 45 | 5 | 10 |
+| 500 | 94,034 | 15 | 500 |
+| 3,000 | 2,681,712 | 21 | 3,000 |
 
-19. Five AI Worked Examples
-Example 1
-Input:
+These are recorded comparison counts, not execution-time measurements. They should be retained only if they match the current benchmark implementation and can be reproduced.
 
-This is urgent, mark it ASAP please
-Output:
+The benchmark illustrates why repeated searching in sorted data can benefit from binary search, while the initial sorting cost must also be considered.
 
-{
-  "title": "This is , mark it please",
-  "priority": "high",
-  "due_date_hint": null
-}
-Example 2
-Input:
+## Quick Add: Natural-Language Task Parsing
 
- 
-Output:
+TaskFlow's Quick Add feature converts supported natural-language descriptions into structured task data.
 
-{
-  "title": "Untitled task",
-  "priority": "medium",
-  "due_date_hint": null
-}
-Example 3
-Input:
+For example, a description such as:
 
-Finish the report next Friday, it's urgent
-Output:
-
-{
-  "title": "Finish the report , it's",
-  "priority": "high",
-  "due_date_hint": "next friday"
-}
-Example 4
-Input:
-
-tomorrow review tomorrow
-Output:
-
-{
-  "title": "review",
-  "priority": "medium",
-  "due_date_hint": "tomorrow"
-}
-Example 5
-Input:
-
+```text
 Fix the scanner ASAP next Monday
-Output:
+```
 
+may be parsed into:
+
+```json
 {
   "title": "Fix the scanner",
   "priority": "high",
   "due_date_hint": "next monday"
 }
-20. Algorithms
-TaskFlow implements three hand-written algorithms.
+```
 
-insertion_sort(records, key)
-Insertion sort modifies the input list directly.
+The exact output depends on the parser's implemented rules.
 
-It starts at the second element, compares the current element with previous elements, shifts larger elements to the right, and inserts the current element into its correct position.
+### Parsing behavior
 
-It does not use Python's built-in sorting functions.
+The deterministic parser recognizes supported priority keywords and date phrases, removes recognized phrases from the task title, and produces structured fields.
 
-binary_search(sorted_records, target_value, key)
-Binary search operates on records that are already sorted by the specified key.
+For example, supported priority rules may recognize:
 
-It uses:
+- `urgent` or `asap` as high priority.
+- `whenever` or `low priority` as low priority.
+- No recognized priority keyword as medium priority.
 
-low
-high
-mid
-pointers.
+When a high-priority keyword and a low-priority keyword are both present, the current documented rule gives high priority precedence.
 
-It returns the index of the matching record.
+Supported date phrases include terms such as `today`, `tomorrow`, `next week`, and weekday names.
 
-If the target is not found, it returns:
+### Important implementation distinction
 
--1
-linear_search(records, target_value, key)
-Linear search scans the records from beginning to end.
+The current parser is deterministic and does not itself require an external LLM API call.
 
-It returns the index of the first matching record.
+The feature demonstrates natural-language-style task parsing, prompt-structure concepts, and structured data validation. It should not be described as a trained machine-learning model or a live LLM integration unless that functionality is separately implemented.
 
-If no record matches, it returns:
+Recognized due-date phrases are hints. If stored as text, they are not necessarily normalized into actual calendar dates.
 
--1
-21. Algorithm Complexity
-Algorithm	Best Case	Worst Case
-Insertion Sort	O(n)	O(n²)
-Binary Search	O(1)	O(log n)
-Linear Search	O(1)	O(n)
-Insertion sort has O(n) best-case time when the list is already ordered.
+## Frontend Integration
 
-Its worst-case time is O(n²) because many elements may need to be shifted.
+The browser frontend communicates with FastAPI using the Fetch API.
 
-Binary search has O(1) best-case time when the middle element is the target.
+The interface supports task-related interactions implemented in the current frontend, including form submission and task-list updates.
 
-Its worst-case time is O(log n) because it halves the search space at each step.
+### Frontend validation
 
-Linear search has O(1) best-case time when the first item matches and O(n) worst-case time when it must inspect the entire list.
+Client-side validation can prevent empty or whitespace-only titles from being submitted.
 
-22. Comparison-Counting Benchmark
-The benchmark uses the counting versions of the algorithms.
+Backend validation remains necessary because client-side checks can be bypassed.
 
-The benchmark was run at three data sizes.
+### Safe DOM rendering
 
-Data size: 10
-Insertion sort comparisons: 45
-Binary search: index=0, comparisons=5
-Linear search: index=9, comparisons=10
-Data size: 500
-Insertion sort comparisons: 94034
-Binary search: index=0, comparisons=15
-Linear search: index=499, comparisons=500
-Data size: 3000
-Insertion sort comparisons: 2681712
-Binary search: index=0, comparisons=21
-Linear search: index=2999, comparisons=3000
-Run the benchmark with:
+Where implemented, the frontend uses DOM methods such as `document.createElement`, `appendChild`, and `textContent` to display task information.
 
-python benchmark.py
-23. Benchmark Analysis
-The benchmark shows that insertion sort becomes expensive as the number of records increases.
+Using `textContent` for user-provided text helps avoid interpreting that text as HTML.
 
-At 10 records it required only 45 comparisons, but at 3,000 records it required 2,681,712 comparisons.
+### Local storage
 
-In comparison, binary search required only 21 comparisons for the 3,000-record search, while linear search required 3,000 comparisons.
+If enabled, browser `localStorage` can cache previously retrieved task data for faster initial display.
 
-For TaskFlow, users may repeatedly view and search their tasks throughout the day while adding or renaming tasks less frequently.
+Cached data is not the authoritative database. The backend remains the source of truth, and cached content should be reconciled with the server response.
 
-Therefore, paying the sorting cost can be worthwhile when sorted data is reused for repeated searches.
+### Responsive layout
 
-For a single search, however, linear search can be preferable because it does not require an initial sorting operation.
+The frontend uses CSS to adapt the interface to different screen sizes.
 
-24. Automated Algorithm Checks
-The project includes:
+The supported breakpoints and specific responsive behavior should match the current stylesheet.
 
-check_algorithms.py
-Run it with:
+## Automated Testing
 
-python check_algorithms.py
-The script checks:
+TaskFlow V2 includes automated tests for important application workflows.
 
-Empty insertion sort
+The verified test result previously recorded for the project was:
 
-Single-element insertion sort
+- Five pytest tests passing.
+- A successful GitHub Actions Python Tests workflow.
 
-Binary search first index
+These results should be rechecked against the latest code before being treated as current.
 
-Binary search last index
+Run the test suite from the repository root:
 
-Binary search middle index
+```bash
+python -m pytest -v
+```
 
-Binary search not-found case
-
-Insertion sort comparison counting
-
-Binary search comparison counting
-
-Linear search comparison counting
-
-Expected output:
-
-PASS: insertion_sort empty list
-PASS: insertion_sort single element
-PASS: binary_search first index
-PASS: binary_search last index
-PASS: binary_search middle
-PASS: binary_search not found
-PASS: insertion_sort_count sorting and count
-PASS: binary_search_count
-PASS: linear_search_count absent value
-The script uses normal if/else conditional statements and does not require pytest or unittest.
-
-25. Frontend Dashboard
-The frontend is located in:
-
-frontend/
-It contains:
-
-index.html
-styles.css
-script.js
-The dashboard includes:
-
-Page heading
-
-Add-task form
-
-Task title input
-
-Due-date input
-
-Priority input
-
-Task list
-
-Edit controls
-
-Delete controls
-
-The frontend communicates with the real FastAPI backend through the Fetch API.
-
-There is no disconnected mock task data layer.
-
-26. Frontend Validation
-The add-task form uses:
-
-event.preventDefault()
-before submitting data.
-
-If the title is empty or contains only whitespace, a validation message is displayed.
-
-The request is not sent to the backend until the title is valid.
-
-Once the title becomes valid, the validation error is removed.
-
-27. Safe DOM Rendering
-Task items are created using:
-
-document.createElement()
-and:
-
-appendChild()
-User-provided task titles are inserted using:
-
-textContent
-rather than unsafe HTML string concatenation.
-
-Interactive controls use:
-
-addEventListener()
-and no inline onclick attributes are used.
-
-28. localStorage Cache
-The frontend stores the current real backend task list in localStorage.
-
-The task list is converted to JSON using:
-
-JSON.stringify()
-When the page loads, the cached JSON is read using:
-
-JSON.parse()
-The cached tasks are rendered immediately while the live backend request is in progress.
-
-After the backend responds, the current backend data replaces the cached data.
-
-localStorage is only a cache and is not a replacement for the backend database.
-
-29. Responsive Design
-The frontend uses CSS media queries.
-
-A breakpoint is provided for screens up to:
-
-768px
-Another breakpoint is provided for screens up to:
-
-480px
-The layout changes at these breakpoints, including the task form layout.
-
-The page also uses the CSS box model with:
-
-margin
-
-border
-
-padding
-
-for task-list and task-item elements.
-
-A persistent UI element uses sticky positioning.
-
-30. Request Logging Middleware
-TaskFlow includes custom HTTP middleware.
-
-For every request it records:
-
-HTTP method
-
-URL path
-
-processing time in milliseconds
-
-Example console output:
-
-GET /tasks - 4.32 ms
-POST /tasks - 5.21 ms
-POST /tasks/quick-add - 7.18 ms
-This middleware executes for every HTTP request.
-
-31. FastAPI Dependency
-The application defines a shared database dependency:
-
-get_db
-It is used with:
-
-Depends(get_db)
-across multiple endpoints.
-
-This avoids duplicating database-session creation and cleanup logic.
-
-The same dependency is used by the CRUD, statistics, sorting, search, and Quick-Add endpoints.
-
-32. CORS
-CORS middleware is configured explicitly.
-
-Allowed origins:
-
-http://localhost:5500
-http://127.0.0.1:5500
-Allowed methods:
-
-GET
-POST
-PUT
-DELETE
-OPTIONS
-Allowed headers include:
-
-Content-Type
-Authorization
-A wildcard origin is not used.
-
-33. Error Handling
-Common errors include:
-
-404
-Returned when a requested task, project, or user-related resource does not exist.
-
-Example:
-
-{
-  "detail": "Task not found"
-}
-422
-Returned when Pydantic validation fails.
-
-Examples include:
-
-Missing required fields
-
-Invalid priority
-
-Blank title
-
-Blank Quick-Add description
-
-Invalid request data
-
-The Quick-Add endpoint also returns 422 when the specified project does not exist.
-
-No task row is created when validation fails.
-
-34. Testing the Application
-Start the backend:
-
-uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
-Start the frontend in another terminal:
-
-cd frontend
-python -m http.server 5500
-Open:
-
-http://127.0.0.1:5500
-API documentation:
-
-http://127.0.0.1:8000/docs
-The application can be tested through the dashboard or through Swagger.
-
-The following functionality is supported:
-
-User creation
-
-User listing
-
-Project creation
-
-Project listing
-
-Task creation
-
-Task listing
-
-Task retrieval
-
-Task update
-
-Task deletion
-
-Task sorting
-
-Binary search
-
-Linear search
-
-Project statistics
-
-AI Quick-Add
-
-Frontend validation
-
-localStorage caching
-
-Responsive dashboard
-
-35. Example End-to-End Workflow
-First create a user:
-
-{
-  "name": "Rahul",
-  "email": "rahul@example.com"
-}
-Suppose the returned user ID is:
-
-1
-Create a project:
-
-{
-  "name": "Dark Store Engineering",
-  "owner_id": 1
-}
-Suppose the returned project ID is:
-
-1
-Create a normal task:
-
-{
-  "title": "Check scanner",
-  "priority": "medium",
-  "due_date": "tomorrow",
-  "project_id": 1
-}
-Or use Quick-Add:
-
-{
-  "description": "Fix scanner ASAP next Monday",
-  "project_id": 1
-}
-The Quick-Add parser creates:
-
-{
-  "title": "Fix scanner",
-  "priority": "high",
-  "due_date": "next monday",
-  "project_id": 1
-}
-The new task is stored in the same tasks table and can immediately be retrieved using:
-
-GET /tasks
-or:
-
-GET /tasks/{id}
-It is also included in:
-
-GET /projects/statistics
-36. Repository and Git Workflow
-The complete TaskFlow application is contained in one repository.
-
-The repository contains all three graded sections:
-
-Section 1 → Core App
-Section 2 → Algorithms Engine
-Section 3 → AI Quick-Add
-The Git workflow uses a feature branch.
-
-At least one feature branch was created, committed to multiple times, and merged back into the main branch.
-
-The complete history can be inspected with:
-
-git log --graph --oneline --all
-37. Final Project Checklist
-The project contains:
-
- FastAPI backend
-
- SQLAlchemy ORM
-
- SQLite database
-
- Users table
-
- Projects table
-
- Tasks table
-
- Foreign-key relationships
-
- Pydantic validation
-
- Task CRUD
-
- User create/list
-
- Project create/list
-
- Project statistics
-
- FastAPI dependency
-
- Request logging middleware
-
- CORS
-
- Frontend dashboard
-
- Fetch API
-
- localStorage caching
-
- Client-side validation
-
- Responsive CSS
-
- Custom insertion sort
-
- Custom binary search
-
- Custom linear search
-
- Sorting endpoint
-
- Search endpoint
-
- Counting benchmarks
-
- Algorithm check script
-
- AI Quick-Add
-
- Deterministic mock parser
-
- Role-based prompt structure
-
- Five AI worked examples
-
- No API key required
-
- One repository containing the entire application
-
-38. Conclusion
-TaskFlow combines a relational backend, interactive frontend, custom algorithms, and deterministic AI-assisted task creation into one working full-stack application.
-
-The sorting and searching algorithms operate on real database task data.
-
-The Quick-Add parser creates real task records in the same database used by the normal CRUD endpoints.
-
-The frontend communicates directly with the backend and uses localStorage only as a temporary cache.
-
-The application can therefore be run locally without any paid external service or API key.
-
-
-### Now do only these 3 things
-
-**1.** In VS Code, open `README.md`.
-
-**2.** Press:
-
-```text
-Ctrl + A
-then paste the complete README above.
-
-3. Press:
-
-Ctrl + S
-
-## Git Workflow
-
-TaskFlow was developed using a feature branch workflow. Changes were developed on a feature branch and merged back into the main branch.
-
-## Algorithm Checks
-
-Run the automated algorithm checks with:
+If the project has a separate algorithm-check script, run it with:
 
 ```bash
 python check_algorithms.py
+```
+
+The algorithm-check script and pytest suite serve different purposes and should be described separately.
+
+## Continuous Integration
+
+The GitHub Actions Python Tests workflow runs automated tests to help detect regressions when code changes are pushed or when the workflow is otherwise triggered.
+
+The workflow provides repeatable test execution and a visible record of success or failure.
+
+Its actual triggers, Python version, dependency installation steps, and test commands are defined in the repository's workflow configuration.
+
+View the repository's Actions tab to inspect the workflow runs.
+
+## Local Installation and Setup
+
+### Prerequisites
+
+- Python installed on your system.
+- Git, if cloning the repository.
+- The project dependencies listed in `requirements.txt`.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/anand-dev-ai/taskflow.git
+cd taskflow
+```
+
+Switch to the appropriate branch if the current V2 code is maintained on a separate branch.
+
+### 2. Create a virtual environment
+
+On Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 4. Start the application
+
+Run the following from the project root:
+
+```bash
+uvicorn backend.main:app --reload
+```
+
+Open the local API documentation:
+
+http://127.0.0.1:8000/docs
+
+If the frontend is served directly through FastAPI in the current version, open the application at the root URL:
+
+http://127.0.0.1:8000/
+
+If the local development setup instead requires a separate frontend server, follow the instructions for that specific version of the application.
+
+## Configuration and Security Notes
+
+- Never commit real passwords, secret keys, or access tokens.
+- Use appropriate secret management for JWT signing keys.
+- Store password hashes rather than plaintext passwords.
+- Validate input on the server, even when the frontend performs validation.
+- Verify resource ownership for authenticated requests.
+- Restrict CORS origins to the intended frontend origins.
+- Treat cached browser data as untrusted and potentially stale.
+- Keep dependencies and configuration consistent between development and deployment.
+
+## Git and Version Control
+
+The project is maintained in Git and hosted on GitHub.
+
+Review recorded changes with:
+
+```bash
+git log --oneline
+```
+
+Inspect branches with:
+
+```bash
+git branch --all
+```
+
+A feature-branch workflow can help isolate changes and make development history easier to review. Claims about merges, pull-request reviews, or team collaboration should reflect the actual repository history.
+
+## Future Improvements
+
+Potential areas for further development include:
+
+- Database schema migrations.
+- Containerized development and deployment.
+- Expanded automated tests and API integration tests.
+- More comprehensive error handling and logging.
+- Improved algorithm benchmark methodology.
+- Stronger API performance measurement.
+- Additional documentation for configuration and deployment.
+
+These are possible future improvements, not claims that the features are already implemented.
+
+## Conclusion
+
+TaskFlow V2 combines authenticated task management, relational database modeling, REST API development, custom algorithms, deterministic natural-language parsing, automated testing, and deployment in one project.
+
+It demonstrates practical software engineering work across backend implementation, data validation, authorization, testing, version control, and application delivery.
+
+The project is intended as a learning and portfolio application. Its features, test results, benchmark measurements, and deployment behavior should be evaluated against the current source code and reproducible evidence.
